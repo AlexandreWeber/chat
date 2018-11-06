@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/AlexandreWeber/chat/issues"
   },
-  "homepage": "https://github.com/AlexandreWeber/chat#readme"
+  "homepage": "https://github.com/AlexandreWeber/chat#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.4"
+  }
 }
