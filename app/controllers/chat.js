@@ -9,10 +9,10 @@ module.exports.chat = ((app, req, res) => {
         return;
     }
 
-    app.get('io').emit('newUser', {
+    app.get('io').emit('msgParaCliente', {
         apelido: apelido,
-        msg: 'Acabou de entrar no chat'
+        mensagem: 'Acabou de entrar no chat'
     });
 
-    res.render('chat');
+    res.render('chat', { apelido: apelido });
 });

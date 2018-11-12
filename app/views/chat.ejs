@@ -70,30 +70,12 @@
 	
 		<div class="container">
             <div class="row conversa" id="conversa">
-				<div class="col-md-1"></div>
 				<div class="col-md-10" id="dialogos"></div>
-					
-				<div class="col-md-1"></div>
-                
             </div>
 			
 			<div class="row participantes" id="participantes" style="display:none">
 				<div class="col-md-1"></div>
-				<div class="col-md-10">
-					<span class="participante">
-						<img src="images/ico_usuario.png" />
-						Jorge
-					</span>
-					
-					<span class="participante">
-						<img src="images/ico_usuario.png" />
-						José
-					</span>
-					
-					<span class="participante">
-						<img src="images/ico_usuario.png" />
-						Fernando
-					</span>
+				<div class="col-md-10" id="participantes">
 				</div>
 				<div class="col-md-1"></div>
                 
@@ -103,16 +85,14 @@
 		<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
 			<div class="container">
 				<div class="panel-body campo-mensagem">
-					<form>
-						<div class="col-md-12">
-							<div class="input-group">
-								<input type="text" class="form-control" placeholder="Mensagem">
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button">></button>
-								</span>
-							</div>
+					<div class="col-md-12">
+						<div class="input-group">
+							<input type="text" class="form-control" id="mensagem" placeholder="Mensagem">
+							<span class="input-group-btn">
+								<button class="btn btn-default" id="enviar_mensagem" type="button">></button>
+							</span>
 						</div>
-					</form>
+					</div>
 				</div>
 			</div>
 		</nav>		
@@ -121,15 +101,42 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io('http://localhost');
-			socket.on('newUser', function (data) {
+			
+			$('#enviar_mensagem').click(function() {
+				socket.emit(
+					'msgParaServidor',
+					{ apelido: '<%= apelido%>', mensagem: $('#mensagem').val() }
+				)
+				$('#mensagem').val("");
+				window.scrollTo(0, document.body.scrollHeight);
+			});
+			
+			socket.on('msgParaCliente', function (data) {
 				var html;
-
-				html += '<div class="dialogo">';
+				
+				if (data.apelido === '<%= apelido%>') {
+					html += '<div class="dialogo" style="background: aliceblue;">';
+					html += '<h4 style="text-align: right;">' + data.apelido + '</h4>';
+					html += '<p style="text-align: right;">' + data.mensagem + '</p>';
+				} else {
+					html += '<div class="dialogo">';
 					html += '<h4>' + data.apelido + '</h4>';
-					html += '<p>' + data.msg + '</p>';
+					html += '<p>' + data.mensagem + '</p>';
+				}
 				html += '</div>';
 
 				$('#dialogos').append(html);
+			});
+
+			
+			socket.on('participantesCliente', function (data) {
+				var html;
+				html += '<span class="participante">';
+					html += '<img src="images/ico_usuario.png">';
+					html += data.apelido;
+				html += '</span>';
+
+				$('#participantes').append(html);
 			});
 		</script>
 	</body>

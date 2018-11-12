@@ -11,7 +11,23 @@ app.set('io', io);
 io.on('connection', ((socket) => {
     console.log('conectado');
 
-    io.on('newUser', ((event) => {
-        console.log(event)
-    }));
+    socket.on('msgParaServidor', function (data) {
+        socket.emit('msgParaCliente', {
+            apelido: data.apelido, 
+            mensagem: data.mensagem
+        });
+        socket.broadcast.emit('msgParaCliente', {
+            apelido: data.apelido, 
+            mensagem: data.mensagem
+        });
+
+        //
+        socket.emit('participantesCliente', {
+            apelido: data.apelido
+        });
+        socket.broadcast.emit('participantesCliente', {
+            apelido: data.apelido
+        });
+
+    });
 }));
